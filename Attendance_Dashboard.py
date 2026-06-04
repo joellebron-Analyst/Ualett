@@ -48,13 +48,22 @@ lob_seleccionado = st.sidebar.selectbox(
         (historic['Status'] == 'Late'), 'LOB'
     ].dropna().unique())
 
-nombre = st.sidebar.selectbox(
-    'Nombre:', historic.loc[
+nombre_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
         (historic['LOB'] == lob_seleccionado) &
         (historic['Status'] == 'Late'), 'Full Name'
     ].unique())
+
+nombres_seleccionados = st.sidebar.multiselect(
+    'Nombre:',
+    options=nombres_disponibles,
+    default=[]  # ninguno seleccionado por defecto
+)
+
+# Si no selecciona ninguno → muestra todos
+if not nombres_seleccionados:
+    nombres_seleccionados = nombres_disponibles
 
 # ── HEADER ───────────────────────────────
 st.markdown('# Attendance Dashboard')
@@ -65,7 +74,7 @@ resultado = historic.loc[
     (historic['LOB'] == lob_seleccionado) &
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
-    (historic['Full Name'] == nombre) &
+    (historic['Full Name'].isin (nombres_seleccionados) &
     (historic['Status'] == status_seleccionado),
     ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
      'Clock in time', 'Clock out time', 'Status']
