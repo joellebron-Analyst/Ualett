@@ -34,26 +34,36 @@ mes_seleccionado = st.sidebar.selectbox(
     'Mes:', meses_disponibles,
     format_func=lambda x: nombre_meses[x])
 
-status_seleccionado = st.sidebar.selectbox('Status',
-                                           historic.loc[
+
+status_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
     ].dropna().unique()
-)
 
-lob_seleccionado = st.sidebar.selectbox(
-    'LOB:', historic.loc[
+status_seleccionado = st.sidebar.multiselect('Status:',
+                                           options = status_seleccionado,
+                                             default = []
+                                            )
+
+
+lob_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
-        (historic['Status'] == 'Late'), 'LOB'
-    ].dropna().unique())
+        (historic['Status'].isin(status_seleccionado), 'LOB'
+    ].dropna().unique()
+
+lob_seleccionado = st.sidebar.multiselect(
+                                        'LOB',
+                                        options=lon_disponibles,
+                                        default =[]
+)
 
 nombres_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
-        (historic['LOB'] == lob_seleccionado) &
-        (historic['Status'] == 'Late'), 'Full Name'
-    ].unique()
+        (historic['LOB'].isin(lob_seleccionado)  &
+        (historic['Status'].isin(status_seleccionado), 'LOB'
+    ].dropna().unique()
 
 nombres_seleccionados = st.sidebar.multiselect(
     'Nombre:',
@@ -75,11 +85,11 @@ else:
     st.markdown(f'### {lob_seleccionado} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 # ── METRICAS ─────────────────────────────
 resultado = historic.loc[
-    (historic['LOB'] == lob_seleccionado) &
+    (historic['LOB'].isin(lob_seleccionado) &
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
-    (historic['Full Name'].isin (nombres_seleccionados)) &
-    (historic['Status'] == status_seleccionado),
+    (historic['Full Name'].isin (nombres_seleccionados))  &
+        (historic['Status'].isin(status_seleccionado),
     ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
      'Clock in time', 'Clock out time', 'Status']
 ]
