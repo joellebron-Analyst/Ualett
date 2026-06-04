@@ -62,7 +62,7 @@ nombres_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
         (historic['LOB'].isin(lob_seleccionado))  &
-        (historic['Status'].isin(status_seleccionado)), 'LOB'
+        (historic['Status'].isin(status_seleccionado)), 'Full Name'
     ].dropna().unique()
 
 nombres_seleccionados = st.sidebar.multiselect(
