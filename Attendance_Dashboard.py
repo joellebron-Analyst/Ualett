@@ -67,8 +67,11 @@ if not nombres_seleccionados:
 
 # ── HEADER ───────────────────────────────
 st.markdown('# Attendance Dashboard')
-st.markdown(f'### {nombre} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
-
+if len(nombres_seleccionados) == 1:
+    st.markdown(f'### {nombres_seleccionados[0]} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
+# Si seleccionó varios o todos
+else:
+    st.markdown(f'### {lob_seleccionado} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 # ── METRICAS ─────────────────────────────
 resultado = historic.loc[
     (historic['LOB'] == lob_seleccionado) &
