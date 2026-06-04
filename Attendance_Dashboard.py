@@ -74,7 +74,7 @@ resultado = historic.loc[
     (historic['LOB'] == lob_seleccionado) &
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
-    (historic['Full Name'].isin (nombres_seleccionados) &
+    (historic['Full Name'].isin (nombres_seleccionados)) &
     (historic['Status'] == status_seleccionado),
     ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
      'Clock in time', 'Clock out time', 'Status']
