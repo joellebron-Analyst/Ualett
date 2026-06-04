@@ -48,7 +48,7 @@ lob_seleccionado = st.sidebar.selectbox(
         (historic['Status'] == 'Late'), 'LOB'
     ].dropna().unique())
 
-nombre_disponibles = historic.loc[
+nombres_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
         (historic['LOB'] == lob_seleccionado) &
