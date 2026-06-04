@@ -85,7 +85,7 @@ else:
     st.markdown(f'### {lob_seleccionado} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 # ── METRICAS ─────────────────────────────
 resultado = historic.loc[
-    (historic['LOB'].isin(lob_seleccionado) &
+    (historic['LOB'].isin(lob_seleccionado)) &
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
     (historic['Full Name'].isin (nombres_seleccionados))  &
