@@ -38,7 +38,7 @@ status_seleccionado = st.sidebar.selectbox('Status',
                                            historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
-    ].dropna().unique())
+    ].dropna().unique()
 
     
 )
