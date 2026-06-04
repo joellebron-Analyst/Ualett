@@ -1,5 +1,6 @@
 import pandas as pd
 import streamlit as st
+import io
 
 st.set_page_config(
     page_title="Attendance",
@@ -34,80 +35,87 @@ mes_seleccionado = st.sidebar.selectbox(
     'Mes:', meses_disponibles,
     format_func=lambda x: nombre_meses[x])
 
-
 status_disponibles = historic.loc[
-        (historic['datestamp'].dt.year == año_seleccionado) &
-        (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
-    ].dropna().unique()
+    (historic['datestamp'].dt.year == año_seleccionado) &
+    (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
+].dropna().unique()
 
-status_seleccionado = st.sidebar.multiselect('Status:',
-                                           options = status_disponibles,
-                                             default = status_disponibles
-                                            )
+status_seleccionado = st.sidebar.multiselect(
+    'Status:', options=status_disponibles, default=status_disponibles)
 
+if not status_seleccionado:
+    status_seleccionado = status_disponibles
 
 lob_disponibles = historic.loc[
-        (historic['datestamp'].dt.year == año_seleccionado) &
-        (historic['datestamp'].dt.month == mes_seleccionado) &
-        (historic['Status'].isin(status_seleccionado)), 'LOB'
-    ].dropna().unique()
+    (historic['datestamp'].dt.year == año_seleccionado) &
+    (historic['datestamp'].dt.month == mes_seleccionado) &
+    (historic['Status'].isin(status_seleccionado)), 'LOB'
+].dropna().unique()
 
 lob_seleccionado = st.sidebar.multiselect(
-                                        'LOB',
-                                        options=lob_disponibles,
-                                        default =lob_disponibles
-)
+    'LOB:', options=lob_disponibles, default=lob_disponibles)
+
+if not lob_seleccionado:
+    lob_seleccionado = lob_disponibles
 
 nombres_disponibles = historic.loc[
-        (historic['datestamp'].dt.year == año_seleccionado) &
-        (historic['datestamp'].dt.month == mes_seleccionado) &
-        (historic['LOB'].isin(lob_seleccionado))  &
-        (historic['Status'].isin(status_seleccionado)), 'Full Name'
-    ].dropna().unique()
+    (historic['datestamp'].dt.year == año_seleccionado) &
+    (historic['datestamp'].dt.month == mes_seleccionado) &
+    (historic['LOB'].isin(lob_seleccionado)) &
+    (historic['Status'].isin(status_seleccionado)), 'Full Name'
+].dropna().unique()
 
 nombres_seleccionados = st.sidebar.multiselect(
-    'Nombre:',
-    options=nombres_disponibles,
-    default=nombres_disponibles  # ninguno seleccionado por defecto
-)
+    'Nombre:', options=nombres_disponibles, default=nombres_disponibles)
 
-# Si no selecciona ninguno → muestra todos
 if not nombres_seleccionados:
     nombres_seleccionados = nombres_disponibles
 
 # ── HEADER ───────────────────────────────
 st.markdown('# Attendance Dashboard')
+st.markdown(f'### {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 
-# # if len(nombres_seleccionados) == 1:
-#     st.markdown(f'### {nombres_seleccionados[0]} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
-# # Si seleccionó varios o todos
-# else:
-#     st.markdown(f'### {lob_seleccionado} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
-# ── METRICAS ─────────────────────────────
+# ── RESULTADO ────────────────────────────
 resultado = historic.loc[
     (historic['LOB'].isin(lob_seleccionado)) &
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
-    (historic['Full Name'].isin (nombres_seleccionados))  &
-        (historic['Status'].isin(status_seleccionado)),
-    ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
+    (historic['Full Name'].isin(nombres_seleccionados)) &
+    (historic['Status'].isin(status_seleccionado)),
+    ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out',
      'Clock in time', 'Clock out time', 'Status']
 ]
 
-# col1, col2, col3 = st.columns(3)
-# col1.metric(f'Total {status_seleccionado}', len(resultado))
-# col2.metric('LOB', lob_seleccionado)
-# col3.metric('Mes', nombre_meses[mes_seleccionado])
+# ── METRICAS ─────────────────────────────
+col1, col2, col3, col4 = st.columns(4)
+col1.metric('Total Registros', len(resultado))
+col2.metric('Empleados', len(nombres_seleccionados))
+col3.metric('LOBs', len(lob_seleccionado))
+col4.metric('Mes', nombre_meses[mes_seleccionado])
+
+# ── DESCARGA ─────────────────────────────
+buffer = io.BytesIO()
+resultado.rename(columns={
+    'datestamp': 'Fecha', 'Full Name': 'Nombre',
+    'Schedule In': 'Entrada Programada', 'Schedule Out': 'Salida Programada',
+    'Clock in time': 'Entrada Real', 'Clock out time': 'Salida Real'
+}).to_excel(buffer, index=False)
+buffer.seek(0)
+
+st.download_button(
+    label='⬇️ Descargar Excel',
+    data=buffer,
+    file_name=f'Attendance_{nombre_meses[mes_seleccionado]}_{año_seleccionado}.xlsx',
+    mime='application/vnd.ms-excel'
+)
 
 # ── TABLA ────────────────────────────────
+resultado = resultado.copy()
 resultado['datestamp'] = resultado['datestamp'].dt.strftime('%m/%d/%Y')
 resultado = resultado.rename(columns={
-    'datestamp': 'Fecha',
-    'Full Name': 'Nombre',
-    'Schedule In': 'Entrada Programada',
-    'Schedule Out': 'Salida Programada',
-    'Clock in time': 'Entrada Real',
-    'Clock out time': 'Salida Real'
+    'datestamp': 'Fecha', 'Full Name': 'Nombre',
+    'Schedule In': 'Entrada Programada', 'Schedule Out': 'Salida Programada',
+    'Clock in time': 'Entrada Real', 'Clock out time': 'Salida Real'
 })
 
 st.dataframe(resultado, hide_index=True, use_container_width=True)
