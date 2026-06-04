@@ -59,12 +59,7 @@ if not nombres_seleccionados:
     nombres_seleccionados = nombres_disponibles
 # ── HEADER ───────────────────────────────
 st.markdown('# Attendance Dashboard')
-# # if len(nombres_seleccionados) == 1:
-#     st.markdown(f'### {nombres_seleccionados[0]} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
-# # Si seleccionó varios o todos
-# else:
-#     st.markdown(f'### {lob_seleccionado} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
-# ── METRICAS ─────────────────────────────
+st.markdown('## General View')
 resultado = historic.loc[
     (historic['LOB'].isin(lob_seleccionado)) &
     (historic['datestamp'].dt.year == año_seleccionado) &
@@ -74,11 +69,7 @@ resultado = historic.loc[
     ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
      'Clock in time', 'Clock out time', 'Status']
 ]
-# col1, col2, col3 = st.columns(3)
-# col1.metric(f'Total {status_seleccionado}', len(resultado))
-# col2.metric('LOB', lob_seleccionado)
-# col3.metric('Mes', nombre_meses[mes_seleccionado])
-# ── TABLA ────────────────────────────────
+
 resultado['datestamp'] = resultado['datestamp'].dt.strftime('%m/%d/%Y')
 resultado = resultado.rename(columns={
     'datestamp': 'Fecha',
