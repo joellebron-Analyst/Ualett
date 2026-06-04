@@ -61,7 +61,7 @@ lob_seleccionado = st.sidebar.multiselect(
 nombres_disponibles = historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado) &
-        (historic['LOB'].isin(lob_seleccionado)  &
+        (historic['LOB'].isin(lob_seleccionado))  &
         (historic['Status'].isin(status_seleccionado)), 'LOB'
     ].dropna().unique()
 
