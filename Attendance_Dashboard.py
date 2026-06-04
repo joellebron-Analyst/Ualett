@@ -94,10 +94,10 @@ resultado = historic.loc[
      'Clock in time', 'Clock out time', 'Status']
 ]
 
-col1, col2, col3 = st.columns(3)
-col1.metric(f'Total {status_seleccionado}', len(resultado))
-col2.metric('LOB', lob_seleccionado)
-col3.metric('Mes', nombre_meses[mes_seleccionado])
+# col1, col2, col3 = st.columns(3)
+# col1.metric(f'Total {status_seleccionado}', len(resultado))
+# col2.metric('LOB', lob_seleccionado)
+# col3.metric('Mes', nombre_meses[mes_seleccionado])
 
 # ── TABLA ────────────────────────────────
 resultado['datestamp'] = resultado['datestamp'].dt.strftime('%m/%d/%Y')
