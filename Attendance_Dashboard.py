@@ -53,7 +53,7 @@ nombre_disponibles = historic.loc[
         (historic['datestamp'].dt.month == mes_seleccionado) &
         (historic['LOB'] == lob_seleccionado) &
         (historic['Status'] == 'Late'), 'Full Name'
-    ].unique())
+    ].unique()
 
 nombres_seleccionados = st.sidebar.multiselect(
     'Nombre:',
