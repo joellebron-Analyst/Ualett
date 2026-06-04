@@ -42,7 +42,7 @@ status_disponibles = historic.loc[
 
 status_seleccionado = st.sidebar.multiselect('Status:',
                                            options = status_disponibles,
-                                             default = []
+                                             default = status_disponibles
                                             )
 
 
@@ -55,7 +55,7 @@ lob_disponibles = historic.loc[
 lob_seleccionado = st.sidebar.multiselect(
                                         'LOB',
                                         options=lob_disponibles,
-                                        default =[]
+                                        default =lob_disponibles
 )
 
 nombres_disponibles = historic.loc[
@@ -68,7 +68,7 @@ nombres_disponibles = historic.loc[
 nombres_seleccionados = st.sidebar.multiselect(
     'Nombre:',
     options=nombres_disponibles,
-    default=[]  # ninguno seleccionado por defecto
+    default=nombres_disponibles  # ninguno seleccionado por defecto
 )
 
 # Si no selecciona ninguno → muestra todos
