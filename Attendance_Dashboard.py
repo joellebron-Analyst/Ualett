@@ -34,6 +34,15 @@ mes_seleccionado = st.sidebar.selectbox(
     'Mes:', meses_disponibles,
     format_func=lambda x: nombre_meses[x])
 
+status_seleccionado = st.sidebar.selectbox('Status',
+                                           historic.loc[
+        (historic['datestamp'].dt.year == año_seleccionado) &
+        (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
+    ].dropna().unique())
+
+    
+)
+
 lob_seleccionado = st.sidebar.selectbox(
     'LOB:', historic.loc[
         (historic['datestamp'].dt.year == año_seleccionado) &
