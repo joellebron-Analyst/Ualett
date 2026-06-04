@@ -41,7 +41,7 @@ status_disponibles = historic.loc[
     ].dropna().unique()
 
 status_seleccionado = st.sidebar.multiselect('Status:',
-                                           options = status_seleccionado,
+                                           options = status_disponibles,
                                              default = []
                                             )
 
