@@ -67,6 +67,7 @@ if not nombres_seleccionados:
 
 # ── HEADER ───────────────────────────────
 st.markdown('# Attendance Dashboard')
+
 if len(nombres_seleccionados) == 1:
     st.markdown(f'### {nombres_seleccionados[0]} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 # Si seleccionó varios o todos
@@ -84,7 +85,7 @@ resultado = historic.loc[
 ]
 
 col1, col2, col3 = st.columns(3)
-col1.metric('Total Tardanzas', len(resultado))
+col1.metric(f'Total {status_seleccionado}', len(resultado))
 col2.metric('LOB', lob_seleccionado)
 col3.metric('Mes', nombre_meses[mes_seleccionado])
 
