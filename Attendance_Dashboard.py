@@ -39,8 +39,6 @@ status_seleccionado = st.sidebar.selectbox('Status',
         (historic['datestamp'].dt.year == año_seleccionado) &
         (historic['datestamp'].dt.month == mes_seleccionado), 'Status'
     ].dropna().unique()
-
-    
 )
 
 lob_seleccionado = st.sidebar.selectbox(
@@ -68,7 +66,7 @@ resultado = historic.loc[
     (historic['datestamp'].dt.year == año_seleccionado) &
     (historic['datestamp'].dt.month == mes_seleccionado) &
     (historic['Full Name'] == nombre) &
-    (historic['Status'] == 'Late'),
+    (historic['Status'] == status_seleccionado),
     ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
      'Clock in time', 'Clock out time', 'Status']
 ]
