@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(
-    page_title="Lateness Report Page",
+    page_title="Attendance",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -50,7 +50,7 @@ nombre = st.sidebar.selectbox(
     ].unique())
 
 # ── HEADER ───────────────────────────────
-st.markdown('# Lateness Dashboard')
+st.markdown('# Attendance Dashboard')
 st.markdown(f'### {nombre} — {nombre_meses[mes_seleccionado]} {año_seleccionado}')
 
 # ── METRICAS ─────────────────────────────
