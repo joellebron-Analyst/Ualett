@@ -90,4 +90,3 @@ resultado = resultado.rename(columns={
 })
 st.dataframe(resultado, hide_index=True, use_container_width=True)
 
-Tengo esto hasta ahora. QUe me recomiendas?
