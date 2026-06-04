@@ -54,7 +54,7 @@ lob_disponibles = historic.loc[
 
 lob_seleccionado = st.sidebar.multiselect(
                                         'LOB',
-                                        options=lon_disponibles,
+                                        options=lob_disponibles,
                                         default =[]
 )
 
