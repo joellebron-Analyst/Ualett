@@ -9,7 +9,12 @@ st.set_page_config(
 def cargar_datos():
     return pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vSL8e5uoUExt5a-LDPCw0rEcFTm0SqAhLz8sYT8sbkYtse1pvMHY9Qij547diNhlP__DYxtuT8XojRO/pub?gid=1596580014&single=true&output=csv')
 historic = cargar_datos()
+
 historic['datestamp'] = pd.to_datetime(historic['datestamp'])
+
+historic = historic.loc[
+historic['datestamp'].dt.year == 2026
+]
 
 nombre_meses = {
     1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril',
