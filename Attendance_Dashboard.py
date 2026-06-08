@@ -42,8 +42,8 @@ fechas_disponibles = historic.loc[
                                   
 fecha_seleccionada = st.sidebar.multiselect(
     'Fecha:',
-    options=fechas_disponibles,
-    default=fechas_disponibles,
+    options=sorted(fechas_disponibles),
+    default=sorted(fechas_disponibles),
     format_func=lambda x: x.strftime('%m/%d/%Y')
 )
 
