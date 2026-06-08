@@ -15,6 +15,7 @@ historic = cargar_datos()
 st.markdown('# Lateness Report')
 st.markdown('### Overview')
 
+
 historic['datestamp'] = pd.to_datetime(historic['datestamp'], format='mixed')
 
 historic = historic[['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In',
@@ -36,6 +37,7 @@ st.sidebar.title('Filtros')
 
 
 años = historic['datestamp'].dt.year.unique()
+
 
 año_seleccionado = st.sidebar.selectbox(
 'Año', options= años
@@ -60,8 +62,8 @@ fechas_disponibles = historic.loc[
                                   
 fecha_seleccionada = st.sidebar.multiselect(
     'Fecha:',
-    options=sorted(fechas_disponibles),
-    default=sorted(fechas_disponibles),
+    options=fechas_disponibles,
+    default=fechas_disponibles,
     format_func=lambda x: x.strftime('%m/%d/%Y'
     )
 )
@@ -80,8 +82,30 @@ status_seleccionado = st.sidebar.multiselect('Status:',
 
 datos  = historic.loc[historic['datestamp'].dt.month == mes_seleccionado]
 
-tardanzas_por_LOB = datos.loc[historic['Status'].isin(status_seleccionado) ].groupby('LOB').size().reset_index(name='Total Tardanza').sort_values('Total Tardanza', ascending= False)
-tardanzas_por_fecha = datos.loc[datos['Status'].isin(status_seleccionado)].groupby('datestamp').size().reset_index(name='Total Tardanza').sort_values('datestamp')
+col1, col2, col3 = st.columns(3)
+
+col1.metric('Total Tardanzas', len(datos[(datos['Status'] == 'Late')&
+                                         (datos['datestamp'].dt.month == mes_seleccionado)&
+                                         (datos['datestamp'].isin(fecha_seleccionada))
+                                         
+                                         ]))
+col2.metric('Total Called Out', len(datos[(datos['Status'] == 'Called Out')&
+                                          (datos['datestamp'].dt.month == mes_seleccionado)&
+                                         (datos['datestamp'].isin(fecha_seleccionada))
+                                          
+                                          ]))
+col3.metric('Total Late In', len(datos[datos['Status'] == 'Late In']))
+
+tardanzas_por_LOB = datos.loc[(datos['Status'].isin(status_seleccionado))&
+                              (datos['datestamp'].isin(fecha_seleccionada))
+                               
+                                ].groupby('LOB').size().reset_index(name='Total Tardanza').sort_values('Total Tardanza', ascending= False)
+
+tardanzas_por_fecha = datos.loc[(datos['Status'].isin(status_seleccionado)) &
+                              (datos['datestamp'].isin(fecha_seleccionada))
+                                
+                                
+                                ].groupby('datestamp').size().reset_index(name='Total Tardanza').sort_values('datestamp')
 
 col1, col2 = st.columns(2)
 
