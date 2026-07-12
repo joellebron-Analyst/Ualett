@@ -111,7 +111,7 @@ resultado = resultado.rename(columns={
     'Schedule Out': 'Salida Programada',
     'Clock in time': 'Entrada Real',
     'Clock out time': 'Salida Real',
-    'Total work time : 'Horas Trabajadas'
+    'Total work time' : 'Horas Trabajadas'
 })
 st.dataframe(resultado, hide_index=True, use_container_width=True)
 
