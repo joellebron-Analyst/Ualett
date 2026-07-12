@@ -99,8 +99,8 @@ resultado = historic.loc[
     (historic['Full Name'].isin (nombres_seleccionados))  &
         (historic['Status'].isin(status_seleccionado))&
         (historic['datestamp'].isin(fecha_seleccionada)),
-    ['datestamp', 'Full Name', 'LOB', 'Schedule In', 'Schedule Out', 
-     'Clock in time', 'Clock out time', 'Status']
+    ['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In', 'Schedule Out', 
+     'Clock in time', 'Clock out time', 'Total work time']
 ]
 
 resultado['datestamp'] = resultado['datestamp'].dt.strftime('%m/%d/%Y')
@@ -110,7 +110,8 @@ resultado = resultado.rename(columns={
     'Schedule In': 'Entrada Programada',
     'Schedule Out': 'Salida Programada',
     'Clock in time': 'Entrada Real',
-    'Clock out time': 'Salida Real'
+    'Clock out time': 'Salida Real',
+    'Total work time : 'Horas Trabajadas'
 })
 st.dataframe(resultado, hide_index=True, use_container_width=True)
 
