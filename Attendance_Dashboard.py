@@ -13,7 +13,7 @@ historic = cargar_datos()
 historic['datestamp'] = pd.to_datetime(historic['datestamp'])
 
 historic = historic.loc[
-historic['datestamp'].dt.year == 2026
+historic['datestamp'].dt.year >= 2026
 ]
 
 nombre_meses = {
@@ -24,35 +24,30 @@ nombre_meses = {
 # ── SIDEBAR ──────────────────────────────
 st.sidebar.title('Filtros')
 
-año_seleccionado = st.sidebar.selectbox(
-    'Año:', sorted(historic['datestamp'].dt.year.unique()))
-meses_disponibles = sorted(historic[
-    historic['datestamp'].dt.year == año_seleccionado
-]['datestamp'].dt.month.unique())
 
-mes_seleccionado = st.sidebar.selectbox(
-    'Mes:', meses_disponibles,
-    format_func=lambda x: nombre_meses[x])
 
-fechas_disponibles = historic.loc[                                  
-                                  (historic['datestamp'].dt.year == año_seleccionado) &
-        (historic['datestamp'].dt.month == mes_seleccionado) 
-        , 'datestamp'
-    ].dropna().unique()
-                                  
-fecha_seleccionada = st.sidebar.multiselect(
-    'Fecha:',
-    options=sorted(fechas_disponibles),
-    default=sorted(fechas_disponibles),
-    format_func=lambda x: x.strftime('%m/%d/%Y')
+fecha_min = historic['datestamp'].min().date()
+fecha_max = historic['datestamp'].max().date()
+
+rango_fechas = st.sidebar.date_input(
+        'Fecha', value=(fecha_min, fecha_max),
+        min_value=fecha_min,
+        max_value=fecha_max,
+        format="MM/DD/YYYY"
 )
 
+if len(rango_fechas) != 2:
+    st.stop()
 
-             
+fecha_inicio, fecha_fin = rango_fechas
+fecha_inicio = pd.Timestamp(fecha_inicio)
+fecha_fin = pd.Timestamp(fecha_fin)
 
 
 lob_disponibles = historic.loc[
-        (historic['datestamp'].isin( fecha_seleccionada)) , 'LOB'
+        (historic['datestamp']>= fecha_inicio)
+         &
+        (historic['datestamp'] <= fecha_fin) , 'LOB'
     ].dropna().unique()
 
 lob_seleccionado = st.sidebar.multiselect(
@@ -62,8 +57,9 @@ lob_seleccionado = st.sidebar.multiselect(
 )
 
 status_disponibles = historic.loc[
-        (historic['datestamp'].isin(fecha_seleccionada))&
-        (historic['LOB'].isin(lob_seleccionado))
+        (historic['datestamp']>= fecha_inicio)
+         &
+        (historic['datestamp'] <= fecha_fin)
         , 'Status'
     ].dropna().unique()
 
@@ -74,8 +70,9 @@ status_seleccionado = st.sidebar.multiselect('Status:',
 
 
 nombres_disponibles = historic.loc[
-        (historic['datestamp'].dt.year == año_seleccionado) &
-        (historic['datestamp'].dt.month == mes_seleccionado) &
+        (historic['datestamp']>= fecha_inicio)
+         &
+        (historic['datestamp'] <= fecha_fin) &
         (historic['LOB'].isin(lob_seleccionado))  &
         (historic['Status'].isin(status_seleccionado)), 'Full Name'
     ].dropna().unique()
@@ -94,12 +91,12 @@ st.markdown('## General View')
 
 resultado = historic.loc[
     (historic['LOB'].isin(lob_seleccionado)) &
-    (historic['datestamp'].dt.year == año_seleccionado) &
-    (historic['datestamp'].dt.month == mes_seleccionado) &
+    (historic['datestamp']>= fecha_inicio)
+         &
+        (historic['datestamp'] <= fecha_fin)&
     (historic['Full Name'].isin (nombres_seleccionados))  &
-        (historic['Status'].isin(status_seleccionado))&
-        (historic['datestamp'].isin(fecha_seleccionada)),
-    ['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In', 'Schedule Out', 
+        (historic['Status'].isin(status_seleccionado)),
+    ['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In', 'Schedule Out',
      'Clock in time', 'Clock out time', 'Total work time']
 ]
 
