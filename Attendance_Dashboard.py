@@ -96,7 +96,7 @@ resultado = historic.loc[
         (historic['datestamp'] <= fecha_fin)&
     (historic['Full Name'].isin (nombres_seleccionados))  &
         (historic['Status'].isin(status_seleccionado)),
-    ['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In', 'Schedule Out',
+    ['datestamp', 'Full Name', 'LOB', 'Status', 'Schedule In', 'Schedule Out', 'Away', 'Lunch',
      'Clock in time', 'Clock out time', 'Total work time']
 ]
 
