@@ -7,7 +7,7 @@ st.set_page_config(
 )
 @st.cache_data
 def cargar_datos():
-    return pd.read_csv('https://docs.google.com/spreadsheets/d/e/2PACX-1vSL8e5uoUExt5a-LDPCw0rEcFTm0SqAhLz8sYT8sbkYtse1pvMHY9Qij547diNhlP__DYxtuT8XojRO/pub?gid=1596580014&single=true&output=csv')
+    return pd.read_csv('https://docs.google.com/spreadsheets/d/1htGdIN36_M1CrB_UheJ06LMOrrIXF8EFDQ0O5SwWcz4/edit?copiedFromTrash=&gid=1596580014#gid=1596580014')
 historic = cargar_datos()
 
 historic['datestamp'] = pd.to_datetime(historic['datestamp'])
